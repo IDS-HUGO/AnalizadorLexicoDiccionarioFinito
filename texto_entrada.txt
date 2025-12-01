@@ -1,0 +1,4 @@
+si contador es_mayor Que diez inicio mientras repite imprimir saludo hasta contador fin
+sino valor_actual Total resultado1 inicio x y z fin
+mientras repite hasta imprimir 123invalido _invalido Mayuscula
+contador suma1 valor_total area_total temperatura si sino

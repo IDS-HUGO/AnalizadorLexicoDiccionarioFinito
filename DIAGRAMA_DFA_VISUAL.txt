@@ -1,0 +1,297 @@
+╔═══════════════════════════════════════════════════════════════════════════╗
+║                                                                           ║
+║                   DIAGRAMA DEL AUTÓMATA FINITO DETERMINISTA               ║
+║                   Para Reconocimiento de Palabras Clave                   ║
+║                                                                           ║
+║                   Universidad Politécnica de Chiapas                      ║
+║                   Lenguajes y Autómatas - Práctica 1                      ║
+║                                                                           ║
+╚═══════════════════════════════════════════════════════════════════════════╝
+
+
+═══════════════════════════════════════════════════════════════════════════
+ESPECIFICACIÓN FORMAL
+═══════════════════════════════════════════════════════════════════════════
+
+M = (Q, Σ, δ, q₀, F)
+
+Q  = {q0, q1, q2, ..., q36, qsi, qsino, qmientras, qrepite, qhasta, 
+      qinicio, qimprimir, qfin}
+
+Σ  = {a, c, e, f, h, i, m, n, o, p, r, s, t}
+
+q₀ = q0
+
+F  = {qsi, qsino, qmientras, qrepite, qhasta, qinicio, qimprimir, qfin}
+
+
+═══════════════════════════════════════════════════════════════════════════
+ESTADO INICIAL Y BIFURCACIONES
+═══════════════════════════════════════════════════════════════════════════
+
+                              ┌──────────┐
+                              │    q0    │
+                              │ (INICIO) │
+                              └────┬─────┘
+                    ┌──────────────┼──────────────┐
+                    │              │              │
+              ┌─────┴──────┐ ┌────┴─────┐ ┌─────┴──────┐
+              │ RAMA 's'   │ │ RAMA 'm' │ │ RAMA 'r'   │
+              │ si, sino   │ │ mientras │ │  repite    │
+              └────────────┘ └──────────┘ └────────────┘
+                    │              │              │
+           ┌────────┴───┬──────────┴──┬──────────┴────────┐
+      ┌────┴────┐  ┌────┴────┐  ┌────┴────┐  ┌───────────┴────┐
+      │ RAMA 'h'│  │ RAMA 'i'│  │ RAMA 'f'│  │ (otras letras) │
+      │  hasta  │  │ inicio  │  │   fin   │  │    → ERROR     │
+      │         │  │imprimir │  │         │  └────────────────┘
+      └─────────┘  └─────────┘  └─────────┘
+
+
+═══════════════════════════════════════════════════════════════════════════
+RAMA 1: "si" y "sino"
+═══════════════════════════════════════════════════════════════════════════
+
+    q0
+     │
+     │ 's'
+     ↓
+    q1
+     │
+     │ 'i'
+     ↓
+╔════════╗ ← ESTADO FINAL: KW_SI
+║   qsi  ║
+╚════╤═══╝
+     │
+     │ 'n'
+     ↓
+    q2
+     │
+     │ 'o'
+     ↓
+╔════════╗ ← ESTADO FINAL: KW_SINO
+║ qsino  ║
+╚════════╝
+
+
+═══════════════════════════════════════════════════════════════════════════
+RAMA 2: "mientras"
+═══════════════════════════════════════════════════════════════════════════
+
+    q0 → 'm' → q8 → 'i' → q9 → 'e' → q10 → 'n' → q11
+                                                   ↓
+                                                  't'
+                                                   ↓
+                                                  q12
+                                                   ↓
+                                                  'r'
+                                                   ↓
+                                                  q13
+                                                   ↓
+                                                  'a'
+                                                   ↓
+                                                  q14
+                                                   ↓
+                                                  's'
+                                                   ↓
+                                             ╔═══════════╗
+                                             ║ qmientras ║ ← FINAL: KW_MIENTRAS
+                                             ╚═══════════╝
+
+
+═══════════════════════════════════════════════════════════════════════════
+RAMA 3: "repite"
+═══════════════════════════════════════════════════════════════════════════
+
+    q0 → 'r' → q15 → 'e' → q16 → 'p' → q17 → 'i' → q18
+                                                     ↓
+                                                    't'
+                                                     ↓
+                                                    q19
+                                                     ↓
+                                                    'e'
+                                                     ↓
+                                               ╔═══════════╗
+                                               ║  qrepite  ║ ← FINAL: KW_REPITE
+                                               ╚═══════════╝
+
+
+═══════════════════════════════════════════════════════════════════════════
+RAMA 4: "hasta"
+═══════════════════════════════════════════════════════════════════════════
+
+    q0 → 'h' → q20 → 'a' → q21 → 's' → q22 → 't' → q23
+                                                     ↓
+                                                    'a'
+                                                     ↓
+                                               ╔═══════════╗
+                                               ║   qhasta  ║ ← FINAL: KW_HASTA
+                                               ╚═══════════╝
+
+
+═══════════════════════════════════════════════════════════════════════════
+RAMA 5: "inicio" e "imprimir" (BIFURCACIÓN DESDE q24)
+═══════════════════════════════════════════════════════════════════════════
+
+                               q0
+                                │
+                                │ 'i'
+                                ↓
+                               q24 ← BIFURCACIÓN
+                                │
+                    ┌───────────┴───────────┐
+                    │                       │
+                   'n'                     'm'
+                    │                       │
+                    ↓                       ↓
+                   q25                     q29
+                    │                       │
+                   'i'                     'p'
+                    │                       │
+                    ↓                       ↓
+                   q26                     q30
+                    │                       │
+                   'c'                     'r'
+                    │                       │
+                    ↓                       ↓
+                   q27                     q31
+                    │                       │
+                   'i'                     'i'
+                    │                       │
+                    ↓                       ↓
+                   q28                     q32
+                    │                       │
+                   'o'                     'm'
+                    │                       │
+                    ↓                       ↓
+              ╔═══════════╗               q33
+              ║  qinicio  ║ FINAL         │
+              ╚═══════════╝              'i'
+              KW_INICIO                   │
+                                          ↓
+                                         q34
+                                          │
+                                         'r'
+                                          ↓
+                                    ╔════════════╗
+                                    ║ qimprimir  ║ ← FINAL: KW_IMPRIMIR
+                                    ╚════════════╝
+
+
+═══════════════════════════════════════════════════════════════════════════
+RAMA 6: "fin"
+═══════════════════════════════════════════════════════════════════════════
+
+    q0 → 'f' → q35 → 'i' → q36 → 'n' → ╔════════╗
+                                        ║  qfin  ║ ← FINAL: KW_FIN
+                                        ╚════════╝
+
+
+═══════════════════════════════════════════════════════════════════════════
+TABLA RESUMEN: ESTADOS FINALES
+═══════════════════════════════════════════════════════════════════════════
+
+╔═══════════════╦═════════════════╦════════════════════════════════════════╗
+║ Estado Final  ║ Tipo de Token   ║ Palabra Reconocida                     ║
+╠═══════════════╬═════════════════╬════════════════════════════════════════╣
+║ qsi           ║ KW_SI           ║ si                                     ║
+║ qsino         ║ KW_SINO         ║ sino                                   ║
+║ qmientras     ║ KW_MIENTRAS     ║ mientras                               ║
+║ qrepite       ║ KW_REPITE       ║ repite                                 ║
+║ qhasta        ║ KW_HASTA        ║ hasta                                  ║
+║ qinicio       ║ KW_INICIO       ║ inicio                                 ║
+║ qimprimir     ║ KW_IMPRIMIR     ║ imprimir                               ║
+║ qfin          ║ KW_FIN          ║ fin                                    ║
+╚═══════════════╩═════════════════╩════════════════════════════════════════╝
+
+
+═══════════════════════════════════════════════════════════════════════════
+EJEMPLO: RECONOCIMIENTO DE "mientras"
+═══════════════════════════════════════════════════════════════════════════
+
+  Paso │ Entrada │ Estado Actual │ Transición δ(q,c) │ Estado Siguiente
+  ─────┼─────────┼───────────────┼───────────────────┼──────────────────
+   0   │   -     │      q0       │        -          │       -
+   1   │  'm'    │      q0       │    δ(q0, 'm')     │      q8
+   2   │  'i'    │      q8       │    δ(q8, 'i')     │      q9
+   3   │  'e'    │      q9       │    δ(q9, 'e')     │     q10
+   4   │  'n'    │     q10       │   δ(q10, 'n')     │     q11
+   5   │  't'    │     q11       │   δ(q11, 't')     │     q12
+   6   │  'r'    │     q12       │   δ(q12, 'r')     │     q13
+   7   │  'a'    │     q13       │   δ(q13, 'a')     │     q14
+   8   │  's'    │     q14       │   δ(q14, 's')     │  qmientras
+  ─────┴─────────┴───────────────┴───────────────────┴──────────────────
+
+  Estado Final: qmientras → ¿Es final? SÍ
+  Resultado: ACEPTADA como KW_MIENTRAS
+
+
+═══════════════════════════════════════════════════════════════════════════
+PROPIEDADES DEL DFA
+═══════════════════════════════════════════════════════════════════════════
+
+✓ DETERMINISTA
+  • Cada estado tiene exactamente UNA transición por símbolo
+  • No hay ambigüedad: Map<Character, Estado> garantiza unicidad
+
+✓ FINITO
+  • Total de estados: ~37
+  • Número fijo de estados y transiciones
+
+✓ SIN MEMORIA
+  • Solo depende del estado actual y símbolo leído
+  • No requiere pila ni variables auxiliares
+
+✓ ESTRUCTURA TRIE (Árbol de Prefijos)
+  • Comparte prefijos comunes: "si" y "sino" comparten q0→q1
+  • Eficiencia espacial: menos estados que DFA sin compartir
+  • Eficiencia temporal: O(k) donde k = longitud de palabra
+
+✓ COMPLETO (con estado de error implícito)
+  • Transiciones no definidas → RECHAZO
+  • Implementado como: if (!transiciones.containsKey(c)) return null;
+
+
+═══════════════════════════════════════════════════════════════════════════
+IMPLEMENTACIÓN EN JAVA (Pseudocódigo)
+═══════════════════════════════════════════════════════════════════════════
+
+class Estado {
+    Map<Character, Estado> transiciones;  // Función δ
+    String tipoToken;                     // null si no es final
+}
+
+public String reconocer(String cadena) {
+    Estado estadoActual = estadoInicial;  // q₀
+    
+    for (char c : cadena.toCharArray()) {
+        if (!estadoActual.transiciones.containsKey(c)) {
+            return null;  // Sin transición → ERROR
+        }
+        estadoActual = estadoActual.transiciones.get(c);  // δ(q, c)
+    }
+    
+    return estadoActual.esFinal() ? estadoActual.tipoToken : null;
+}
+
+
+═══════════════════════════════════════════════════════════════════════════
+NOTAS FINALES
+═══════════════════════════════════════════════════════════════════════════
+
+• Este DFA reconoce exactamente 8 palabras clave del lenguaje
+• Cualquier otra secuencia de caracteres es RECHAZADA
+• La implementación como TRIE optimiza memoria y velocidad
+• Complejidad de reconocimiento: O(k) donde k = longitud de la palabra
+• No depende del número total de palabras en el diccionario
+
+
+═══════════════════════════════════════════════════════════════════════════
+
+Universidad Politécnica de Chiapas
+Lenguajes y Autómatas - Cuatrimestre 7
+Proyecto Final - Práctica 1
+Diciembre 2025
+
+═══════════════════════════════════════════════════════════════════════════
