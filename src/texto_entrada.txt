@@ -1,0 +1,1 @@
+si contador es_mayor Que diez inicio mientras repite imprimir saludo hasta contador fin
